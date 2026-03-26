@@ -31,16 +31,21 @@ export function AuthProvider({ children }: PropsWithChildren) {
 
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, async (currentUser) => {
-      setUser(currentUser);
+      try {
+        setUser(currentUser);
 
-      if (currentUser) {
-        await ensureUserProfileDocument(currentUser);
-        setProfile(await getUserProfile(currentUser));
-      } else {
+        if (currentUser) {
+          await ensureUserProfileDocument(currentUser);
+          setProfile(await getUserProfile(currentUser));
+        } else {
+          setProfile(null);
+        }
+      } catch (error) {
+        console.error("Erro no AuthContext (onAuthStateChanged):", error);
         setProfile(null);
+      } finally {
+        setLoading(false);
       }
-
-      setLoading(false);
     });
 
     return unsubscribe;
