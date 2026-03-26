@@ -20,6 +20,7 @@ export function subscribeToTransactions(
   userId: string,
   callback: (transactions: Transaction[]) => void
 ) {
+  console.log("subscribeToTransactions userId:", userId);
   const q = query(getTransactionsCollection(userId), orderBy("date", "desc"));
 
   return onSnapshot(q, (snapshot) => {
